@@ -1,8 +1,10 @@
-<% var data = {
+<%
+var data = {
   title: "Webpack Config",
-}; %>
+};
+%>
 
-<%= _.template(require('./../templates/header.html'))(data) %>
+<%= _.template(require(root + '/templates/header.html'))(data) %>
 
 <div class="container">
   <div class="jumbotron">
@@ -78,4 +80,4 @@
   </div>
 </div>
 
-<%= _.template(require('./../templates/footer.html'))(data) %>
+<%= _.template(require(root + '/templates/footer.html'))(data) %>

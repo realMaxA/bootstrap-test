@@ -76,7 +76,7 @@ module.exports = (env = {}, argv) => {
 
     output: {
       path: path.resolve(__dirname, 'dist'),
-      publicPath: '',
+      publicPath: '/',
       filename: 'scripts/[name].js',
       crossOriginLoading: 'anonymous'
     },

@@ -1,0 +1,25 @@
+{
+    "type": "book",
+    "parameters": {
+        "contents": [
+            {
+                "title": "Chapter 1",
+                "location": "ch-1.html",
+                "contents": [
+                    {
+                        "title": "Chapter 1.1",
+                        "location": "ch-1.1.html"
+                    },
+                    {
+                        "title": "Chapter 1.2",
+                        "location": "ch-1.2.html"
+                    }
+                ]
+            },
+            {
+                "title": "Chapter 2",
+                "location": "ch-2.html"
+            }
+        ]
+    }
+}

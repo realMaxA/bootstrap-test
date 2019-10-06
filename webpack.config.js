@@ -13,49 +13,49 @@ const plugins = {
   extractCSS: require('mini-css-extract-plugin'),
   sync: require('browser-sync-webpack-plugin'),
   html: require('html-webpack-plugin'),
-  copy: require('copy-webpack-plugin'),
-  sri: require('webpack-subresource-integrity'),
+  // copy: require('copy-webpack-plugin'),
+  // sri: require('webpack-subresource-integrity'),
 }
 
-function fileList(dir) {
-  return fs.readdirSync(dir).filter(function(file) {
-      const name = path.join(dir, file);
-      if (fs.statSync(name).isDirectory()) {
-          return true;
-      }
-      const parts = file.split('.');
-      const extension = parts[parts.length - 1];
-      return (extension == "html");
-  }).reduce(function (list, file) {
-      const name = path.join(dir, file);
-      if (fs.statSync(name).isDirectory()) {
-          return list.concat(fileList(name));
-          fs.r
-      }
-      return list.concat([name]);
-  }, []);
-}
+// function fileList(dir) {
+//   return fs.readdirSync(dir).filter(function(file) {
+//       const name = path.join(dir, file);
+//       if (fs.statSync(name).isDirectory()) {
+//           return true;
+//       }
+//       const parts = file.split('.');
+//       const extension = parts[parts.length - 1];
+//       return (extension == "html");
+//   }).reduce(function (list, file) {
+//       const name = path.join(dir, file);
+//       if (fs.statSync(name).isDirectory()) {
+//           return list.concat(fileList(name));
+//           fs.r
+//       }
+//       return list.concat([name]);
+//   }, []);
+// }
 
-function generateHtmlPlugins(pagesDir) {
-  console.log('----> ' + __dirname);
-  const pagesFiles = fileList(pagesDir);
-  return pagesFiles.map(item => {
-    const template = path.relative(`src`,item);
-    const destination = path.relative(pagesDir,item);
-    console.log(`=====> ${template}   -to-   ${destination}`);
-    return new plugins.html({
-      template: `${template}`,
-      filename: `${destination}`,
-      base: true,
-      inject: `head`,
-      // root: path.relative(path.dirname(destination), path.resolve(__dirname, 'src')),
-      minify: {
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true
-      }
-    })
-  })
-}
+// function generateHtmlPlugins(pagesDir) {
+//   console.log('----> ' + __dirname);
+//   const pagesFiles = fileList(pagesDir);
+//   return pagesFiles.map(item => {
+//     const template = path.relative(`src`,item);
+//     const destination = path.relative(pagesDir,item);
+//     console.log(`=====> ${template}   -to-   ${destination}`);
+//     return new plugins.html({
+//       template: `templates/index.html`, 
+//       filename: `${destination}`,
+//       base: true,
+//       inject: `head`,
+//       // root: path.relative(path.dirname(destination), path.resolve(__dirname, 'src')),
+//       minify: {
+//         removeScriptTypeAttributes: true,
+//         removeStyleLinkTypeAttributes: true
+//       }
+//     })
+//   })
+// }
 
 module.exports = (env = {}, argv) => {
   const isProduction = argv.mode === 'production'
@@ -79,6 +79,13 @@ module.exports = (env = {}, argv) => {
       publicPath: '/',
       filename: 'scripts/[name].js',
       crossOriginLoading: 'anonymous'
+    },
+
+    resolve: {
+      modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+      alias: {
+        '~': path.resolve(__dirname, 'src/scripts/'),
+      }
     },
 
     module: {
@@ -185,20 +192,46 @@ module.exports = (env = {}, argv) => {
         },
         {
           test: /\.html$/,
-          include: path.resolve(__dirname, 'src/templates'),
-          // use: {
-          //   loader: 'raw-loader'
-          // },
-          use: {
-            loader: 'html-loader',
-            options: {
-              // minimize: true,
-              removeComments: true,
-              collapseWhitespace: true,
-              removeScriptTypeAttributes: true,
-              removeStyleTypeAttributes: true
-            }
-          },
+          // include: path.resolve(__dirname, 'src'),
+          use: [
+            {
+              loader: 'raw-loader'
+            },
+            // {
+            //   loader: 'html-loader',
+            //   options: {
+            //     // minimize: true,
+            //     removeComments: true,
+            //     collapseWhitespace: true,
+            //     removeScriptTypeAttributes: true,
+            //     removeStyleTypeAttributes: true
+            //   }
+            // },
+            {
+              loader: 'twig-html-loader',
+              options: {
+                data: {
+                  title: 'ttttttt',
+                  fruits: [
+                    'q',
+                    'w',
+                    'e',
+                    'r',
+                    't',
+                    'y',
+                  ]
+                },
+                namespaces: {
+                  'templates': path.resolve(__dirname, 'src/templates'),
+                },
+                functions: {
+                  pwd() {
+                    return JSON.stringify(this);
+                  }
+                },
+              }
+            },
+          ]
         }
       ]
     },
@@ -213,41 +246,72 @@ module.exports = (env = {}, argv) => {
       quiet: true
     },
 
+    node: {
+      fs: "empty" // avoids error messages
+    },
+
     plugins: (() => {
       let common = [
         new plugins.extractCSS({
           filename: 'styles/[name].css'
         }),
-        // new plugins.html({
-        //   template: 'html/index.html',
-        //   filename: 'index.html',
-        //   minify: {
-        //     removeScriptTypeAttributes: true,
-        //     removeStyleLinkTypeAttributes: true
-        //   }
-        // }),
+        new plugins.html({
+          template: 'html/index.html',
+          filename: 'index.html',
+          inject: true,
+          // minify: {
+          //   // removeScriptTypeAttributes: true,
+          //   // removeStyleLinkTypeAttributes: true
+          // }
+        }),
+        new plugins.html({
+          template: 'html/book1/ch-1.html',
+          filename: 'book1/ch-1.html',
+          inject: true,
+        }),
+        new plugins.html({
+          template: 'html/book1/ch-1.1.html',
+          filename: 'book1/ch-1.1.html',
+          inject: true,
+        }),
+        new plugins.html({
+          template: 'html/book1/ch-1.2.html',
+          filename: 'book1/ch-1.2.html',
+          inject: true,
+        }),
+        new plugins.html({
+          template: 'html/book1/ch-2.html',
+          filename: 'book1/ch-2.html',
+          inject: true,
+        }),
+        new plugins.html({
+          template: 'html/book2/article.html',
+          filename: 'book2/article.html',
+          inject: true,
+        }),
         new plugins.progress({
           color: '#5C95EE'
         }),
-        new webpack.DefinePlugin({
-          root: JSON.stringify(path.resolve(__dirname, 'src'))
-        })
-      ].concat(generateHtmlPlugins('src/html'))
+        // new webpack.DefinePlugin({
+        //   root: JSON.stringify(path.resolve(__dirname, 'src'))
+        // })
+      ]
+      // .concat(generateHtmlPlugins('src/html'))
 
       const production = [
         new plugins.clean(),
-        new plugins.copy([
-          {
-            from: 'data/**/*.json',
-            transform: content => {
-              return minJSON(content.toString())
-            }
-          }
-        ]),
-        new plugins.sri({
-          hashFuncNames: ['sha384'],
-          enabled: true
-        })
+        // new plugins.copy([
+        //   {
+        //     from: 'data/**/*.json',
+        //     transform: content => {
+        //       return minJSON(content.toString())
+        //     }
+        //   }
+        // ]),
+        // new plugins.sri({
+        //   hashFuncNames: ['sha384'],
+        //   enabled: true
+        // })
       ]
 
       const development = [
@@ -274,14 +338,7 @@ module.exports = (env = {}, argv) => {
         : 'source-map'
     })(),
 
-    resolve: {
-      modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-      alias: {
-        '~': path.resolve(__dirname, 'src/scripts/')
-      }
-    },
-
-    stats: 'errors-only'
+    stats: 'verbose'
   }
 
   return config

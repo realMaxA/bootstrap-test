@@ -1,0 +1,15 @@
+{
+    "type": "catalogue",
+    "parameters": {
+        "books": [
+            {
+                "title": "Book 1",
+                "location": "book1"
+            },
+            {
+                "title": "Book 2",
+                "location": "book2"
+            }
+        ]
+    }
+}

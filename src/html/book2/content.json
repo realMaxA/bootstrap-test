@@ -1,0 +1,11 @@
+{
+    "type": "book",
+    "parameters": {
+        "contents": [
+            {
+                "title": "Article",
+                "location": "article.html"
+            }
+        ]
+    }
+}

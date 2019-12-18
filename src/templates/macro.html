@@ -1,0 +1,12 @@
+{% macro display_contents(book, pageFile) %}
+<ul class="navbar-nav mr-auto">
+    {% for section in book.contents %}
+        <li class="nav-item"><a class="nav-link{% if isCurrentSection(pageFile, section.location) %} active{% endif %}" href="{{ section.location }}">{{ section.title }}</a>
+        {% if section.contents %}
+            {% import _self as macro %}
+            {{ macro.display_contents(section, pageFile) }}
+        {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endmacro %}

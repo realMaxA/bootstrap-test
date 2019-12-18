@@ -1,22 +1,33 @@
+{% use "menu.html" %}
+{% use "footer.html" %}
+
+{% set context = init_template() %}
+
 <!doctype html>
 <html lang="ru">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-  <title>test</title>
-
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+  {% include "./headings.html" %}
 </head>
 
-<body>
+<body class="fixed-sn light-blue-skin">
+  <header class="sticky-top">
+    {% block menu %}{{ parent() }}{% endblock %}
+  </header>
+  <main class="container-fluid col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="flex-wrap border-bottom">
+      {% block body %}{% endblock %}
+    </div>
+  </main>
 
-{% include "./header.html" %}
-
-{% block body %}{% endblock %}
-
-{% include "./footer.html" %}
+  <!--Footer-->
+  <footer class="page-footer text-center text-md-left pt-4 bg-dark">
+    <div>
+      {% block footer %}{{ parent() }}{% endblock %}
+    </div
+  </footer>
+  <!--/.Footer-->
 
 </body>
+
 </html>

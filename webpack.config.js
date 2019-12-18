@@ -1,61 +1,104 @@
-const path = require('path')
-const webpack = require('webpack')
-const minJSON = require('jsonminify')
-const Fiber = require('fibers')
-const fs = require('fs')
+const fs = require('fs');
+const path = require('path');
+const slash = require('slash');
+// const webpack = require('webpack');
+// const minJSON = require('jsonminify');
+
+const librarypath = 'src/html';
 
 const plugins = {
   progress: require('webpackbar'),
   clean: (() => {
-    const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-    return CleanWebpackPlugin
+    const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+    return CleanWebpackPlugin;
   })(),
   extractCSS: require('mini-css-extract-plugin'),
   sync: require('browser-sync-webpack-plugin'),
   html: require('html-webpack-plugin'),
-  // copy: require('copy-webpack-plugin'),
-  // sri: require('webpack-subresource-integrity'),
 }
 
-// function fileList(dir) {
-//   return fs.readdirSync(dir).filter(function(file) {
-//       const name = path.join(dir, file);
-//       if (fs.statSync(name).isDirectory()) {
-//           return true;
-//       }
-//       const parts = file.split('.');
-//       const extension = parts[parts.length - 1];
-//       return (extension == "html");
-//   }).reduce(function (list, file) {
-//       const name = path.join(dir, file);
-//       if (fs.statSync(name).isDirectory()) {
-//           return list.concat(fileList(name));
-//           fs.r
-//       }
-//       return list.concat([name]);
-//   }, []);
-// }
+const librarySettings = readSettings(librarypath)
 
-// function generateHtmlPlugins(pagesDir) {
-//   console.log('----> ' + __dirname);
-//   const pagesFiles = fileList(pagesDir);
-//   return pagesFiles.map(item => {
-//     const template = path.relative(`src`,item);
-//     const destination = path.relative(pagesDir,item);
-//     console.log(`=====> ${template}   -to-   ${destination}`);
-//     return new plugins.html({
-//       template: `templates/index.html`, 
-//       filename: `${destination}`,
-//       base: true,
-//       inject: `head`,
-//       // root: path.relative(path.dirname(destination), path.resolve(__dirname, 'src')),
-//       minify: {
-//         removeScriptTypeAttributes: true,
-//         removeStyleLinkTypeAttributes: true
-//       }
-//     })
-//   })
-// }
+function setSettings(dest, src) {
+  for (prop in dest) {
+    if (prop in src) {
+      dest[prop] = src[prop]
+    }
+  }
+}
+
+function readSettings(location) {
+
+  var result = {
+    type: 'common',
+    title: '',
+    altName: '',
+    content: {},
+  }
+
+  var indexfile = path.join(location, 'content.json')
+
+  if (fs.existsSync(indexfile) && fs.statSync(indexfile).isFile()) {
+    content = JSON.parse(fs.readFileSync(indexfile, 'utf8'))
+
+    setSettings(result, content)
+  }
+
+  return result
+
+}
+
+function templatePath(object) {
+
+  location = '';
+
+  if ('overrideBlocks' in object) {
+    if ('body' in object.overrideBlocks) {
+      location = object.overrideBlocks.body.template.path;
+    }
+  } else if ('template' in object) {
+    location = object.template.path;
+  }
+
+  return location;
+
+}
+
+function templateLocation(object) {
+
+  return path.dirname(templatePath(object));
+
+}
+
+function fileList(dir, ext) {
+  return fs.readdirSync(dir).filter(function (file) {
+    const name = path.join(dir, file)
+    if (fs.statSync(name).isDirectory())
+      return true
+    const parts = file.split('.')
+    const extension = parts[parts.length - 1]
+    return (extension == ext)
+  }).reduce(function (list, file) {
+    const name = path.join(dir, file)
+    if (fs.statSync(name).isDirectory())
+      return list.concat(fileList(name, ext))
+    return list.concat([name])
+  }, [])
+}
+
+function generateHtmlPlugins(pagesDir) {
+  const pagesFiles = fileList(pagesDir, 'html');
+  return pagesFiles.map(item => {
+    const template = path.relative(`src`, item);
+    const destination = path.relative(pagesDir, item);
+    return new plugins.html({
+      template: `${template}`,
+      filename: `${destination}`,
+      inject: `true`,
+      minify: true
+    })
+  })
+}
 
 module.exports = (env = {}, argv) => {
   const isProduction = argv.mode === 'production'
@@ -79,13 +122,6 @@ module.exports = (env = {}, argv) => {
       publicPath: '/',
       filename: 'scripts/[name].js',
       crossOriginLoading: 'anonymous'
-    },
-
-    resolve: {
-      modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-      alias: {
-        '~': path.resolve(__dirname, 'src/scripts/'),
-      }
     },
 
     module: {
@@ -126,9 +162,11 @@ module.exports = (env = {}, argv) => {
               loader: 'sass-loader',
               options: {
                 implementation: require('sass'),
-                fiber: Fiber,
-                outputStyle: 'expanded',
-                sourceMap: !isProduction
+                sassOptions: {
+                  fiber: require('fibers'),
+                  outputStyle: 'expanded',
+                  sourceMap: !isProduction
+                }
               }
             }
           ]
@@ -159,7 +197,7 @@ module.exports = (env = {}, argv) => {
             {
               loader: 'image-webpack-loader',
               options: {
-                bypassOnDebug: !isProduction,
+                disable: !isProduction,
                 mozjpeg: {
                   progressive: true,
                   quality: 65
@@ -168,11 +206,14 @@ module.exports = (env = {}, argv) => {
                   enabled: false
                 },
                 pngquant: {
-                  quality: '65-90',
+                  quality: [0.65, 0.90],
                   speed: 4
                 },
                 gifsicle: {
                   interlaced: false
+                },
+                webp: {
+                  quality: 75
                 }
               }
             }
@@ -192,45 +233,36 @@ module.exports = (env = {}, argv) => {
         },
         {
           test: /\.html$/,
-          // include: path.resolve(__dirname, 'src'),
-          use: [
-            {
-              loader: 'raw-loader'
+          use: [{
+            loader: 'html-loader',
+            options: {
+              minimize: isProduction ? true : false
             },
-            // {
-            //   loader: 'html-loader',
-            //   options: {
-            //     // minimize: true,
-            //     removeComments: true,
-            //     collapseWhitespace: true,
-            //     removeScriptTypeAttributes: true,
-            //     removeStyleTypeAttributes: true
-            //   }
-            // },
-            {
-              loader: 'twig-html-loader',
-              options: {
-                data: {
-                  title: 'ttttttt',
-                  fruits: [
-                    'q',
-                    'w',
-                    'e',
-                    'r',
-                    't',
-                    'y',
-                  ]
+          },
+          {
+            loader: 'twig-html-loader',
+            options: {
+              data: {
+              },
+              namespaces: {
+                'templates': path.resolve(__dirname, 'src/templates'),
+              },
+              functions: {
+                init_template() {
+                  var result = {};
+
+                  result.pageFile = templatePath(this);
+                  result.librarySettings = librarySettings;
+                  result.templateSettings = readSettings(templateLocation(this));
+
+                  return result
                 },
-                namespaces: {
-                  'templates': path.resolve(__dirname, 'src/templates'),
+                isCurrentSection(location, section) {
+                  return (path.basename(location) == section)
                 },
-                functions: {
-                  pwd() {
-                    return JSON.stringify(this);
-                  }
-                },
-              }
-            },
+              },
+            }
+          },
           ]
         }
       ]
@@ -255,63 +287,13 @@ module.exports = (env = {}, argv) => {
         new plugins.extractCSS({
           filename: 'styles/[name].css'
         }),
-        new plugins.html({
-          template: 'html/index.html',
-          filename: 'index.html',
-          inject: true,
-          // minify: {
-          //   // removeScriptTypeAttributes: true,
-          //   // removeStyleLinkTypeAttributes: true
-          // }
-        }),
-        new plugins.html({
-          template: 'html/book1/ch-1.html',
-          filename: 'book1/ch-1.html',
-          inject: true,
-        }),
-        new plugins.html({
-          template: 'html/book1/ch-1.1.html',
-          filename: 'book1/ch-1.1.html',
-          inject: true,
-        }),
-        new plugins.html({
-          template: 'html/book1/ch-1.2.html',
-          filename: 'book1/ch-1.2.html',
-          inject: true,
-        }),
-        new plugins.html({
-          template: 'html/book1/ch-2.html',
-          filename: 'book1/ch-2.html',
-          inject: true,
-        }),
-        new plugins.html({
-          template: 'html/book2/article.html',
-          filename: 'book2/article.html',
-          inject: true,
-        }),
         new plugins.progress({
           color: '#5C95EE'
         }),
-        // new webpack.DefinePlugin({
-        //   root: JSON.stringify(path.resolve(__dirname, 'src'))
-        // })
-      ]
-      // .concat(generateHtmlPlugins('src/html'))
+      ].concat(generateHtmlPlugins('src/html'))
 
       const production = [
         new plugins.clean(),
-        // new plugins.copy([
-        //   {
-        //     from: 'data/**/*.json',
-        //     transform: content => {
-        //       return minJSON(content.toString())
-        //     }
-        //   }
-        // ]),
-        // new plugins.sri({
-        //   hashFuncNames: ['sha384'],
-        //   enabled: true
-        // })
       ]
 
       const development = [

@@ -1,6 +1,7 @@
 {
     "type": "book",
-    "parameters": {
+    "title": "Book 2",
+    "content": {
         "contents": [
             {
                 "title": "Article",

@@ -1,0 +1,28 @@
+{% block menu %}
+<nav class="navbar navbar-dark bg-dark navbar-expand-md flex-md-nowrap p-0 shadow header-firstnav">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">Company name</a>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#"><i class="fas fa-envelope"></i> <span
+                    class="clearfix d-none d-sm-inline-block">Contact</span></a>
+        </li>
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#"><i class="far fa-comments"></i> <span
+                    class="clearfix d-none d-sm-inline-block">Support</span></a>
+        </li>
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#"><i class="fas fa-user"></i> <span
+                    class="clearfix d-none d-sm-inline-block">Account</span></a>
+        </li>
+        <li class="nav-item text-nowrap dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">Книги</a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                {% for book in context.librarySettings.content.books %}
+                <a href="/{{ book.location }}/" class="dropdown-item">{{ book.title }}</a>
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endblock %}

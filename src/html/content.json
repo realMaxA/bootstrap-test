@@ -1,6 +1,7 @@
 {
     "type": "catalogue",
-    "parameters": {
+    "title": "Автор",
+    "content": {
         "books": [
             {
                 "title": "Book 1",

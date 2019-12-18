@@ -1,2 +1,19 @@
-
-<p>sidebar</p>
+{% block sidebar %}
+<nav class="navbar-dark bg-dark shadow header-secondnav col-sm-2 navbar-toggleable-md" id="sidebar">
+    <div class="sticky-top flex-grow-1">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item text-nowrap">
+                <div
+                    class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <a class="nav-link" href="./"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png"
+                            class="img-fluid flex-center"></a>
+                </div>
+            </li>
+            <li class="nav-item">
+                {% import macro.html as macro %}
+                {{ macro.display_contents(context.templateSettings.content, context.pageFile) }}
+            </li>
+        </ul>
+    </div>
+</nav>
+{% endblock %}

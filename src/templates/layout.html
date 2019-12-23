@@ -10,24 +10,21 @@
   {% include "./headings.html" %}
 </head>
 
-<body class="fixed-sn light-blue-skin">
-  <header class="sticky-top">
+<body>
+  <div class="container">
+
     {% block menu %}{{ parent() }}{% endblock %}
-  </header>
-  <main class="container-fluid col-md-9 ml-sm-auto col-lg-10 px-4">
-    <div class="flex-wrap border-bottom">
-      {% block body %}{% endblock %}
+
+    <div class="container-fluid">
+      <div class="content-content-right row">
+        {% block body %}{% endblock %}
+      </div>
     </div>
-  </main>
 
-  <!--Footer-->
-  <footer class="page-footer text-center text-md-left pt-4 bg-dark">
-    <div>
+    <footer>
       {% block footer %}{{ parent() }}{% endblock %}
-    </div
-  </footer>
-  <!--/.Footer-->
-
+    </footer>
+  </div>
 </body>
 
 </html>

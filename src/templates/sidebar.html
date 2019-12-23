@@ -1,19 +1,58 @@
 {% block sidebar %}
-<nav class="navbar-dark bg-dark shadow header-secondnav col-sm-2 navbar-toggleable-md" id="sidebar">
-    <div class="sticky-top flex-grow-1">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item text-nowrap">
-                <div
-                    class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <a class="nav-link" href="./"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png"
-                            class="img-fluid flex-center"></a>
-                </div>
-            </li>
-            <li class="nav-item">
-                {% import macro.html as macro %}
-                {{ macro.display_contents(context.templateSettings.content, context.pageFile) }}
-            </li>
-        </ul>
+<div class="sticky-top">
+    <nav class="navbar"></nav>
+    <div class="navbar-brand d-flex justify-content-between align-items-center text-muted">
+        <a class="nav-link" href="./"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png"
+                class="img-fluid flex-center"></a>
     </div>
-</nav>
+    <!-- <div class="sidebar-menu"> -->
+    {% import macro.html as macro %}
+    {{ macro.display_contents(context.templateSettings.content, context.pageFile) }}
+    <ul class="navbar-nav">
+        <li class="nav-item">
+        </li>
+        <li class="nav-item"><a class="nav-link" href="./">1. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">2. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">3. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">4. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">5. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">6. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">7. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">8. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">9. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">10. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">11. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">12. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">13. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">14. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">15. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">16. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">17. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">18. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">19. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+        <li class="nav-item"><a class="nav-link" href="./">20. йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу йцуйцу</a></li
+            class="nav-item">
+    </ul>
+    <!-- </div> -->
+    </nav>
+</div>
 {% endblock %}

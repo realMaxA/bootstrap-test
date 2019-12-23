@@ -11,28 +11,44 @@
   {% include "./headings.html" %}
 </head>
 
-<body class="fixed-sn light-blue-skin">
-  <header class="sticky-top" id="header">
+<body>
+  <div class="container">
+
     {% block menu %}{{ parent() }}{% endblock %}
-  </header>
-  <div class="">
-    <div class="row wrapper">
-      {% block sidebar %}{{ parent() }}{% endblock %}
-      <main class="col-md-9 ml-sm-auto col-lg-10 px-4">
-        <div class="flex-wrap border-bottom">
-          {% block body %}{% endblock %}
+
+    <div class="container-fluid">
+
+      <div class="row wrapper">
+
+        <div class="col-3 shadow">
+          {% block sidebar %}{{ parent() }}{% endblock %}
         </div>
-      </main>
+
+        <div class="col" id="main">
+
+          <div class="content-header row">
+            qwe
+          </div>
+
+          <div class="content-content-right row">
+            {% block body %}{% endblock %}
+          </div>
+
+          <div class="content-footer row">
+            qwe
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <footer class="footer">
+        {% block footer %}{{ parent() }}{% endblock %}
+      </footer>
+
     </div>
   </div>
-
-  <!--Footer-->
-  <footer class="page-footer text-center text-md-left pt-4 bg-dark">
-    <div class="row">
-      {% block footer %}{{ parent() }}{% endblock %}
-    </div>
-  </footer>
-  <!--/.Footer-->
-
 </body>
+
 </html>
